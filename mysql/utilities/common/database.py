@@ -60,12 +60,6 @@ _OBJTYPE_QUERY = """
         FROM INFORMATION_SCHEMA.ROUTINES
         WHERE ROUTINE_SCHEMA = '%(db_name)s' AND ROUTINE_NAME = '%(obj_name)s'
     )
-    UNION
-    (
-        SELECT 'EVENT' as object_type
-        FROM mysql.event
-        WHERE DB = '%(db_name)s' AND NAME = '%(obj_name)s'
-    )
 """
 
 _DEFINITION_QUERY = """
