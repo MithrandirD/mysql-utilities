@@ -361,7 +361,7 @@ class GeneralQueryLog(LogParserBase):
         except ValueError:
             connection = argument.replace(' on', '')
             database = None
-        session['user'], session['host'] = connection.split('@')
+        session['user'], session['host'] = connection.rsplit('@', 1)
         session['database'] = database
         entry['argument'] = argument
 
