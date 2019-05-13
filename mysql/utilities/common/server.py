@@ -1175,6 +1175,8 @@ class Server(object):
                 cpy_flags = [ClientFlag.SSL, ClientFlag.SSL_VERIFY_SERVER_CERT]
                 parameters['client_flags'] = cpy_flags
 
+            parameters['use_pure'] = True
+
             db_conn = mysql.connector.connect(**parameters)
             # Return MySQL connection object.
             return db_conn
