@@ -25,6 +25,7 @@ import logging
 import os
 import signal
 import sys
+import traceback
 
 from mysql.utilities.common.tools import check_python_version
 from mysql.utilities import VERSION_FRM, VERSION_STRING
@@ -410,6 +411,7 @@ if __name__ == '__main__':
         # log the error in case it was an usual exception
         logging.log(logging.CRITICAL, e.errmsg.strip(' '))
         print("ERROR: %s" % e.errmsg)
+        print(traceback.format_exc())
         sys.exit(1)
     except KeyboardInterrupt:
         sys.exit(0)
