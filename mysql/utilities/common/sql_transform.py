@@ -1255,6 +1255,10 @@ class SQLTransformer(object):
         if self._check_columns([_VIEW_DEFINER, _VIEW_SECURITY, _VIEW_CHECK]):
             statement_parts[4]['val'] = self.source[_VIEW_BODY]
 
+        # properly quote the definer
+        statement_parts[1] = {'fmt': " DEFINER=%s", 'col': _IGNORE_COLUMN,
+                              'val': "`%s`@`%s`" % tuple(self.source[_VIEW_DEFINER].split("@"))}
+
         # form the drop if we do a create
         if do_create:
             statements.append("DROP VIEW IF EXISTS `%s`.`%s`;" %
