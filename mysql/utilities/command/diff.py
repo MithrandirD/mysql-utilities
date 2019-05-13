@@ -50,10 +50,37 @@ def object_diff(server1_val, server2_val, object1, object2, options,
 
     Returns None = objects are the same, diff[] = tables differ
     """
-    server1, server2 = server_connect(server1_val, server2_val,
-                                      object1, object2, options)
+    if isinstance(server1_val, dict):  # dict or common.server.Server object
+        server1, server2 = server_connect(server1_val, server2_val,
+                                          object1, object2, options)
+    else:
+        # to save connection
+        server1, server2 = server1_val, server2_val
 
     force = options.get("force", None)
+
+    # compare db's all objects
+    include_create = options.get("include_create", False)
+    # db1.*:db2.*
+    if include_create and object1.endswith('.*') and object2.endswith('.*'):
+        direction = options.get("changes-for", None)
+        reverse = options.get("reverse", False)
+
+        db_name1, _ = parse_object_name(object1, server1.select_variable("SQL_MODE"))
+        db_name2, _ = parse_object_name(object2, server2.select_variable("SQL_MODE"))
+        in_both, in_db1, in_db2 = get_common_objects(server1, server2, 
+                                                    db_name1, db_name2, True, options)
+        # create/alter/drop need all objects compare
+        all_object = set(in_both + in_db1 + in_db2)
+
+        # call myself recusively to compare all objects 
+        for this_obj in all_object:
+            object1 = db_name1 + "." + this_obj[1][0]
+            object2 = db_name2 + "." + this_obj[1][0]
+            # share the same connection in this loop. object_type=None
+            object_diff(server1, server2, object1, object2, options, object_type=None)
+        return []
+
     # Get the object type if unknown considering that objects of different
     # types can be found with the same name.
     if not object_type:
@@ -63,11 +90,15 @@ def object_diff(server1_val, server2_val, object1, object2, options,
         db = Database(server1, db_name, options)
         obj1_types = db.get_object_type(obj_name)
         if not obj1_types:
-            msg = "The object {0} does not exist.".format(object1)
-            if not force:
-                raise UtilDBError(msg)
-            print("ERROR: {0}".format(msg))
-            return []
+            if include_create:
+                # if allow generating create object ddl, give 'NULL' object here to tell common.dbcompare.py to handle
+                obj1_types = ['NULL']
+            else:
+                msg = "The object {0} does not exist.".format(object1)
+                if not force:
+                    raise UtilDBError(msg)
+                print("ERROR: {0}".format(msg))
+                return []
 
         # Get object types of object2
         sql_mode = server2.select_variable("SQL_MODE")
@@ -75,14 +106,27 @@ def object_diff(server1_val, server2_val, object1, object2, options,
         db = Database(server2, db_name, options)
         obj2_types = db.get_object_type(obj_name)
         if not obj2_types:
-            msg = "The object {0} does not exist.".format(object2)
+            if include_create:
+                obj2_types = ['NULL']
+            else:
+                msg = "The object {0} does not exist.".format(object2)
+                if not force:
+                    raise UtilDBError(msg)
+                print("ERROR: {0}".format(msg))
+                return []
+
+        # Merge types found for both objects
+        obj_types = set(obj1_types + obj2_types)
+        if obj_types == set(['NULL']):
+            msg = "The object {0} or {1} does not exist in the source side.".format(object1, object2)
             if not force:
                 raise UtilDBError(msg)
             print("ERROR: {0}".format(msg))
             return []
-
-        # Merge types found for both objects
-        obj_types = set(obj1_types + obj2_types)
+        elif 'NULL' in obj_types:
+            # at least one object exist in db1 and db2
+            # new db object like  TABLE-NULL or NULL-TABLE , 'TABLE' is needed for after use in diff_objects()
+            obj_types = set(['-'.join(obj1_types + obj2_types)])
 
         # Diff objects considering all types found
         result = []
@@ -131,6 +175,7 @@ def database_diff(server1_val, server2_val, db1, db2, options):
     in_both.sort()
     if (len(in_db1) > 0 or len(in_db2) > 0) and not force:
         return False
+    # when all objects in db1 and db2 both exists, continue
 
     # Get sql_mode value set on servers
     server1_sql_mode = server1.select_variable("SQL_MODE")

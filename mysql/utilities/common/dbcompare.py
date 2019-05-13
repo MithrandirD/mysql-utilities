@@ -595,8 +595,35 @@ def diff_objects(server1, server2, object1, object2, options, object_type):
     width = options.get("width", 75)
     direction = options.get("changes-for", None)
     reverse = options.get("reverse", False)
-    skip_table_opts = options.get("skip_table_opts", False)
     compact_diff = options.get("compact", False)
+    skip_table_opts = options.get("skip_table_opts", False)
+    include_drop = options.get("include_drop", False)
+
+    # when object doesn't exist and include_create and db.* given, generate create sql rather than throw exception
+    if object_type.endswith("NULL"):
+        # like TABLE-NULL, db2.obj2 does not exist
+        object_type = object_type.split('-')[0]
+        if direction == 'server2' or reverse:
+            object1_create = get_create_object(server1, object1, options, object_type)
+            sql_mode = server2.select_variable("SQL_MODE")
+            dbname, _ = parse_object_name(object2, sql_mode)
+            print("\nUSE {0};\n{1}';\n'".format(dbname, object1_create))
+        elif include_drop:  # direction=server1 and include_drop
+            print("DROP {0} IF EXISTS {1};\n".format(object_type, object1))
+        diff_list = ["# object {0} does not exist, so create/or drop it.\n".format(object1)]
+        return diff_list
+    elif object_type.startswith("NULL"):
+        # like NULL-TABLE, db1.obj1 does not exist
+        object_type = object_type.split('-')[1]
+        if direction == 'server1' or direction is None or reverse:
+            object2_create = get_create_object(server2, object2, options, object_type)
+            sql_mode = server1.select_variable("SQL_MODE")
+            dbname, _ = parse_object_name(object1, sql_mode)
+            print("\nUSE {0};\n{1}';\n'".format(dbname, object2_create))
+        elif include_drop:
+            print("DROP {0} IF EXISTS {1};\n".format(object_type, object2))
+        diff_list = ["# object {0} does not exist, so create/or drop it.\n".format(object2)]
+        return diff_list
 
     # Get object CREATE statement.
     # Note: Table options are discarded if option skip_table_opts=True.
