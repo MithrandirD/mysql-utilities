@@ -846,7 +846,7 @@ class Server(object):
                 # to make sure connection is really alive
                 retval = self.db_conn.is_connected()
                 if retval:
-                    self.exec_query("SHOW DATABASES")
+                    self.exec_query("SELECT 1 FROM DUAL")
                 else:
                     res = False
         except:
