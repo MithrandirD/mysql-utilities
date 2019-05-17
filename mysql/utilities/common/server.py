@@ -57,6 +57,8 @@ def tostr(value):
 
     Returns value as str instance or None.
     """
+    if isinstance(value, unicode):
+        value = value.encode('utf-8')
     return None if value is None else str(value)
 
 
