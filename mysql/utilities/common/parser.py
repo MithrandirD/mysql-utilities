@@ -21,8 +21,11 @@ import re
 import decimal
 import datetime
 
-from mysql.utilities.exception import LogParserError
-
+try:
+    from mysql.utilities.exception import LogParserError
+except:
+    class LogParserError(Exception):
+        pass
 
 #_DATE_PAT = r"\d{6}\s+\d{1,2}:\d{2}:\d{2}"
 _DATE_PAT = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z"
