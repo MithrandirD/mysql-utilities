@@ -24,7 +24,8 @@ import datetime
 from mysql.utilities.exception import LogParserError
 
 
-_DATE_PAT = r"\d{6}\s+\d{1,2}:\d{2}:\d{2}"
+#_DATE_PAT = r"\d{6}\s+\d{1,2}:\d{2}:\d{2}"
+_DATE_PAT = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}Z"
 
 _HEADER_VERSION_CRE = re.compile(
     r"(.+), Version: (\d+)\.(\d+)\.(\d+)(?:-(\S+))?")
@@ -240,6 +241,9 @@ class LogParserBase(object):
         Returns a LogParserBase-object.
         """
         return self
+
+    def __next__(self):
+        return self.next()
 
     def next(self):
         """Returns the next log entry
@@ -480,8 +484,8 @@ class GeneralQueryLog(LogParserBase):
 
         entry['command'] = command
         if dt is not None:
-            entry['datetime'] = datetime.datetime.strptime(dt,
-                                                           "%y%m%d %H:%M:%S")
+            #entry['datetime'] = datetime.datetime.strptime(dt,"%y%m%d %H:%M:%S")
+            entry['datetime'] = datetime.datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%fZ")
             session['time_last_action'] = entry['datetime']
         else:
             entry['datetime'] = session['time_last_action']
@@ -777,8 +781,9 @@ class GeneralQueryLogEntry(LogEntryBase):
         param = self.copy()
         param['clsname'] = self.__class__.__name__
         try:
-            if len(param['argument']) > 30:
-                param['argument'] = param['argument'][:28] + '..'
+            # if len(param['argument']) > 30:
+            #     param['argument'] = param['argument'][:28] + '..'
+            pass
         except TypeError:
             pass  # Nevermind when param['argument'] was not a string.
         try:
