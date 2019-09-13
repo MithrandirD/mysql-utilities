@@ -1125,7 +1125,7 @@ class Database(object):
                 part_opts = "{0}{1}".format(sep, part_opts)
             # Then, separate table definitions from table options.
             create_tbl, sep, _ = create_tbl.rpartition(') ')
-            tbl_opts = re.sub(r'AUTO_INCREMENT=[0-9]*', '', _)  # only remove AUTO_INCREMENT values
+            tbl_opts = re.sub(r'AUTO_INCREMENT=[0-9 	]+', '', _)  # only remove AUTO_INCREMENT values
             # Reconstruct CREATE statement without table options.
             create_statement = "{0}{1}{2}{3}".format(create_tbl, sep, part_opts, tbl_opts)
 
