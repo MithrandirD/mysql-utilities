@@ -57,8 +57,6 @@ def tostr(value):
 
     Returns value as str instance or None.
     """
-    if isinstance(value, unicode):
-        value = value.encode('utf-8')
     return None if value is None else str(value)
 
 
@@ -848,7 +846,7 @@ class Server(object):
                 # to make sure connection is really alive
                 retval = self.db_conn.is_connected()
                 if retval:
-                    self.exec_query("SELECT 1 FROM DUAL")
+                    self.exec_query("SHOW DATABASES")
                 else:
                     res = False
         except:
