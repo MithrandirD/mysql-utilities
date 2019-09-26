@@ -125,16 +125,6 @@ if __name__ == '__main__':
                       help="skip check of all table options (e.g., "
                            "AUTO_INCREMENT, ENGINE, CHARSET, etc.).")
 
-    # Skip only AUTO_INCREMENT table option.
-    parser.add_option("--skip-opt-autoinc", action="store_true", default=False,
-                      dest="skip_opt_autoinc",
-                      help="skip table option AUTO_INCREMENT only")
-
-    # Skip table partitioning options
-    parser.add_option("--skip-partitioning", action="store_true", default=False,
-                      dest="skip_partitioning",
-                      help="skip table partitioning options")
-
     # Add display width option
     parser.add_option("--width", action="store", dest="width",
                       type="int", help="display width",
@@ -258,8 +248,6 @@ if __name__ == '__main__':
         "changes-for": opt.changes_for,
         "reverse": opt.reverse,
         "span_key_size": opt.span_key_size,
-        "skip_opt_autoinc": opt.skip_opt_autoinc,
-        "skip_partitioning": opt.skip_partitioning,
         "skip_table_opts": opt.skip_tbl_opts,
         "charset": opt.charset,
         "use_indexes": db_idxes_l,

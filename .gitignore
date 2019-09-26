@@ -4,7 +4,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
 
 # C extensions
 *.so
@@ -16,22 +15,16 @@ mysql/connector
 *.egg-info
 dist/
 build/
-sdist/
-.installed.cfg
 MANIFEST
 
 # Unit test / coverage reports
 htmlcov/
 .tox/
-.nox/
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
 
 # OSX and Pycharm
 .DS_Store
@@ -50,40 +43,3 @@ coverage.xml
 
 # Result file used by some MUT tests
 mysql-test/result.txt
-
-# extension-less script files left from build
-scripts/mysqlauditadmin
-scripts/mysqlauditgrep
-scripts/mysqlbinlogmove
-scripts/mysqlbinlogpurge
-scripts/mysqlbinlogrotate
-scripts/mysqldbcompare
-scripts/mysqldbcopy
-scripts/mysqldbexport
-scripts/mysqldbimport
-scripts/mysqldiff
-scripts/mysqldiskusage
-scripts/mysqlfailover
-scripts/mysqlfrm
-scripts/mysqlgrants
-scripts/mysqlindexcheck
-scripts/mysqlmetagrep
-scripts/mysqlprocgrep
-scripts/mysqlreplicate
-scripts/mysqlrpladmin
-scripts/mysqlrplcheck
-scripts/mysqlrplms
-scripts/mysqlrplshow
-scripts/mysqlrplsync
-scripts/mysqlserverclone
-scripts/mysqlserverinfo
-scripts/mysqlslavetrx
-scripts/mysqluc
-scripts/mysqluserclone
-
-### VisualStudioCode ###
-.vscode/
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
