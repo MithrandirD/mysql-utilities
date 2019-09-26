@@ -607,7 +607,7 @@ def diff_objects(server1, server2, object1, object2, options, object_type):
             object1_create = get_create_object(server1, object1, options, object_type)
             sql_mode = server2.select_variable("SQL_MODE")
             dbname, _ = parse_object_name(object2, sql_mode)
-            print("\nUSE {0};\n{1}';\n'".format(dbname, object1_create))
+            print("\nUSE {0};\n{1};\n".format(dbname, object1_create))
         elif include_drop:  # direction=server1 and include_drop
             print("DROP {0} IF EXISTS {1};\n".format(object_type, object1))
         diff_list = ["# object {0} does not exist, so create/or drop it.\n".format(object1)]
@@ -619,7 +619,7 @@ def diff_objects(server1, server2, object1, object2, options, object_type):
             object2_create = get_create_object(server2, object2, options, object_type)
             sql_mode = server1.select_variable("SQL_MODE")
             dbname, _ = parse_object_name(object1, sql_mode)
-            print("\nUSE {0};\n{1}';\n'".format(dbname, object2_create))
+            print("\nUSE {0};\n{1};\n".format(dbname, object2_create))
         elif include_drop:
             print("DROP {0} IF EXISTS {1};\n".format(object_type, object2))
         diff_list = ["# object {0} does not exist, so create/or drop it.\n".format(object2)]
