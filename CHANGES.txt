@@ -1,3 +1,20 @@
+Release-1.6.6-IDA
+-------------
+- COMT#c8dca61 : Add INFORMATION_SCHEMA-based event schema object handling
+
+- COMT#befe5bd : ISSUE-36: Avoid using SHOW DATABASES for alive check
+- COMT#7d4f198 : no mysql.event in mysql 8, remove it
+- COMT#4e7bd0a : no more mysql.proc in mysql 8, use information_schema.routines
+- COMT#43ac066 : use the pure python connector implementation
+- COMT#34f707e : Include traceback output when error occurs
+- COMT#20e6c0b : Properly quote the definer for CREATE / ALTER VIEW statements
+- COMT#7a1c8b6 : sql_transform.py: fix skip-opt-autoinc
+- COMT#513139a : mysqldiff: make the result sql more readable
+- COMT#40e0b99 : mysqldiff: add --include-create & --include-drop options
+- COMT#e74f19d : mysqldiff: add --skip-opt-autoinc
+- COMT#65843c1 : sql_transform.py:_get_index_sql_clauses(): make indexes by name and index fields in consistent order
+
+
 Release-1.6.5
 -------------
 - BUG#25030151 : mysqlfailover (v:1.6) was stopped silently when using a '--exec-before' script
